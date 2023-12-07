@@ -1,0 +1,10 @@
+{
+  "env": {
+    "DB_USER": "grishi634",
+    "DB_PASSWORD": "E65uHU2XpocUA67B",
+    "DB_NAME": "cluster0.1rjlyay",
+    "FRONTEND_URL": "http://localhost:3000",
+    "SECRET_KEY": "dsa_sheets",
+    "DB": "prod"
+  }
+}
