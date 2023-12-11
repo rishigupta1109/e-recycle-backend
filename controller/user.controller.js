@@ -16,7 +16,8 @@ exports.signup = async (req, res, next) => {
   let existingUser;
   try {
     existingUser = await User.findOne({
-      $or: [{ email: email }],
+      // $or: [{ email: email }],
+      email: email,
     });
     if (existingUser) {
       return next(new HttpError("User already exists", 422));
@@ -31,6 +32,7 @@ exports.signup = async (req, res, next) => {
     await user.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
+    console.log(err);
     return next(new HttpError("Signup failed, please try again later", 500));
   }
 };
