@@ -46,11 +46,27 @@ exports.createRequest = async (req, res, next) => {
   }
 };
 exports.getRequests = async (req, res, next) => {
+  const { id } = req.query;
+  console.log(id);
   try {
-    const requests = await RequestModel.find();
+    let requests;
+    requests = await RequestModel.find({
+      userId: id,
+    });
     res.status(200).json({ requests: requests });
   } catch (err) {
     const error = new HttpError("Fetching requests failed", 500);
+    return next(error);
+  }
+};
+
+exports.deleteRequest = async (req, res, next) => {
+  const { id } = req.query;
+  try {
+    await RequestModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "Request deleted successfully" });
+  } catch (err) {
+    const error = new HttpError("Deleting request failed", 500);
     return next(error);
   }
 };
