@@ -12,9 +12,13 @@ app.use(cors());
 //routes
 const { userRoutes } = require("./routes/User.route");
 const { dataRoutes } = require("./routes/Data.route");
+const { facilityRoutes } = require("./routes/facility.route");
+const { adminRoutes } = require("./routes/admin.route");
 
 app.use("/api/user", userRoutes);
 app.use("/api/data", dataRoutes);
+app.use("/api/facility", facilityRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use((req, res, next) => {
   return next(new HttpError("could not find this route", 404));
