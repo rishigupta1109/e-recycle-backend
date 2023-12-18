@@ -45,6 +45,7 @@ exports.login = async (req, res, next) => {
       userType: existingUser.userType,
     });
   } catch (err) {
+    console.log(err);
     return next(new HttpError("Login failed, please try again later", 500));
   }
 };
