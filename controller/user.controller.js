@@ -74,6 +74,31 @@ exports.login = async (req, res, next) => {
     return next(new HttpError("Login failed, please try again later", 500));
   }
 };
+exports.validateToken = async (req, res, next) => {
+  const { token } = req.body;
+  if (!token) {
+    return next(new HttpError("Token not found", 404));
+  }
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+    const userId = decodedToken.userId;
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return next(new HttpError("User not found", 404));
+    }
+    res.status(200).json({
+      id: existingUser._id,
+      email: existingUser.email,
+      token: token,
+      name: existingUser.name,
+      phoneNumber: existingUser.phoneNumber,
+      credits: existingUser.credits,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Token is invalid", 422));
+  }
+};
 
 // exports.updateUser = async (req, res, next) => {
 //   const { userId, name, dailyGoal, revisitDays, college } = req.body;

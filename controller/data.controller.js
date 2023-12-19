@@ -1,5 +1,7 @@
+const FacilityModel = require("../models/facility.model");
 const HttpError = require("../models/HttpError");
 const RequestModel = require("../models/Request.model");
+const mail = require("./mail.controller");
 var ObjectId = require("mongoose").Types.ObjectId;
 
 exports.createRequest = async (req, res, next) => {
@@ -38,6 +40,17 @@ exports.createRequest = async (req, res, next) => {
   console.log(newRequest);
   try {
     await newRequest.save();
+    const facilityData = await FacilityModel.findById(facility);
+    mail(
+      userEmail,
+      "Request received",
+      `Your request has been received. You will be notified once your request is accepted.`
+    );
+    mail(
+      facilityData.email,
+      "New request received",
+      `A new request has been received from ${name}. Please login to your account to view the request.`
+    );
     res.status(201).json({ message: "Request created successfully" });
   } catch (err) {
     console.log(err);

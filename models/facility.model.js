@@ -15,6 +15,14 @@ const FacilitySchema = new mongoose.Schema({
   },
   status: { type: String, required: true },
   password: { type: String },
+  lat: {
+    type: Number,
+    required: true,
+  },
+  lng: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Facility", FacilitySchema);

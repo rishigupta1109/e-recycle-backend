@@ -1,6 +1,7 @@
 // Import necessary modules
 const { hash, compare } = require("bcryptjs");
 const Facility = require("../models/facility.model");
+const UserModel = require("../models/User.model");
 const mail = require("./mail.controller");
 const HttpError = require("../models/HttpError");
 const { sign } = require("jsonwebtoken");
@@ -19,6 +20,8 @@ const createFacility = async (req, res) => {
       phone,
       website,
       registrationNumber,
+      lat,
+      lng,
     } = req.body;
 
     // Create a new facility
@@ -32,12 +35,18 @@ const createFacility = async (req, res) => {
       phone,
       website,
       registrationNumber,
+      lat,
+      lng,
       status: "pending", // Set initial status to pending
     });
 
     // Save the facility to the database
     await facility.save();
-
+    mail(
+      email,
+      "Facility registration request received",
+      "Your facility registration request has been received. You will be notified once your account is verified."
+    );
     // Return success response
     res.status(201).json({ message: "Applied for facility registration" });
   } catch (error) {
@@ -154,7 +163,7 @@ const login = async (req, res, next) => {
     res.status(200).json({
       token: token,
       userType: "facility",
-      ...existingUser,
+      ...existingUser._doc,
     });
   } catch (err) {
     console.log(err);
@@ -164,11 +173,59 @@ const login = async (req, res, next) => {
 const getRequests = async (req, res) => {
   try {
     const requests = await RequestModel.find({
-      facilityId: req.query.facilityId,
+      facility: req.query.facilityId,
     });
     res.json(requests);
   } catch (error) {
     res.status(500).json({ error: "Failed to get requests" });
+  }
+};
+const updateRequest = async (req, res) => {
+  try {
+    const request = req.body;
+    const id = request._id;
+    const updatedRequest = await RequestModel.findByIdAndUpdate(id, request, {
+      new: true,
+    });
+    if (!updatedRequest) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+    if (request.status === "Accepted") {
+      mail(
+        request.userEmail,
+        "Request accepted",
+        `Your request has been accepted. Please login to your account to view the request.`
+      );
+    } else if (request.status === "Rejected") {
+      mail(
+        request.userEmail,
+        "Request rejected",
+        `Your request has been rejected. Please login to your account to view the request.`
+      );
+    } else if (request.status === "Recieved") {
+      console.log(request);
+      const updatedUser = await UserModel.findByIdAndUpdate(request.userId, {
+        $inc: { credits: request.credits },
+      });
+      console.log(updatedUser);
+
+      mail(
+        request.userEmail,
+        "Item Recieved By facility",
+        `Your Item has been Recieved. ${request.credits} credits has been added to your account. Please login to your account to view the request.}`
+      );
+    } else {
+      mail(
+        request.userEmail,
+        "Request completed",
+        `Your request has been Updated by Facility. Please login to your account to view the request.`
+      );
+    }
+
+    res.json({ message: "Request updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to update request" });
   }
 };
 // Export the controller functions
@@ -179,4 +236,5 @@ module.exports = {
   blockFacilityStatus,
   login,
   getRequests,
+  updateRequest,
 };

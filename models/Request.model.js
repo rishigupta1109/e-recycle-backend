@@ -58,6 +58,15 @@ const Request = mongoose.Schema({
     type: String,
     required: true,
   },
+  deliveryBoy: {
+    type: String,
+  },
+  deliveryBoyPhone: {
+    type: String,
+  },
+  credits: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Request", Request);

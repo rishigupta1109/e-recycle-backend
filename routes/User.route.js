@@ -22,6 +22,7 @@ router.post(
   ],
   userController.login
 );
+router.post("/validate", userController.validateToken);
 // router.patch("/update", checkAuth, userController.updateUser);
 // router.post("/reset", userController.generateOtp);
 // router.post("/reset-otpverify", userController.checkOtp);
