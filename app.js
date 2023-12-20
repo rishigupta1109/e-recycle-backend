@@ -14,6 +14,7 @@ const { userRoutes } = require("./routes/User.route");
 const { dataRoutes } = require("./routes/Data.route");
 const { facilityRoutes } = require("./routes/facility.route");
 const { adminRoutes } = require("./routes/admin.route");
+const { generateCertificate } = require("./controller/certificateGenerator");
 
 app.use("/api/user", userRoutes);
 app.use("/api/data", dataRoutes);
@@ -31,7 +32,7 @@ app.use((error, req, res, next) => {
     .status(error.code || 500)
     .json({ message: error.message || "an unknown error occured" });
 });
-
+generateCertificate("Rishi Gupta");
 mongoose
   .connect(
     `mongodb+srv://grishi634:E65uHU2XpocUA67B@cluster0.qhhctyw.mongodb.net/?retryWrites=true&w=majority`

@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const mail = (email, subject, message) => {
+const mail = (email, subject, message, file) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -15,6 +15,13 @@ const mail = (email, subject, message) => {
     subject: subject,
     text: message,
     replyTo: "thebookbajaar@gmail.com",
+    attachments: [
+      {
+        filename: "certificate.pdf",
+        path: file,
+        contentType: "application/pdf",
+      },
+    ],
   };
   transporter.sendMail(mailOptions, function (err, res) {
     if (err) {

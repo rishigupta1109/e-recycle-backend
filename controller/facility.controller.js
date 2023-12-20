@@ -6,6 +6,7 @@ const mail = require("./mail.controller");
 const HttpError = require("../models/HttpError");
 const { sign } = require("jsonwebtoken");
 const RequestModel = require("../models/Request.model");
+const { generateCertificate } = require("./certificateGenerator");
 // Create a facility
 const createFacility = async (req, res) => {
   try {
@@ -42,7 +43,7 @@ const createFacility = async (req, res) => {
 
     // Save the facility to the database
     await facility.save();
-    mail(
+    await mail(
       email,
       "Facility registration request received",
       "Your facility registration request has been received. You will be notified once your account is verified."
@@ -208,11 +209,12 @@ const updateRequest = async (req, res) => {
         $inc: { credits: request.credits },
       });
       console.log(updatedUser);
-
+      await generateCertificate(request?.name);
       mail(
         request.userEmail,
         "Item Recieved By facility",
-        `Your Item has been Recieved. ${request.credits} credits has been added to your account. Please login to your account to view the request.}`
+        `Your Item has been Recieved. ${request.credits} credits has been added to your account. Please login to your account to view the request.}`,
+        "output.pdf"
       );
     } else {
       mail(
