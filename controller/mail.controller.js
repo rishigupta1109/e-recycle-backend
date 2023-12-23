@@ -4,17 +4,17 @@ const mail = (email, subject, message, file) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "thebookbajaar@gmail.com",
-      pass: "yihuoxpbqpcqhobv",
+      user: "@gmail.com",
+      pass: "",
     },
   });
 
   const mailOptions = {
-    from: "thebookbajaar@gmail.com",
+    from: "@gmail.com",
     to: email,
     subject: subject,
     text: message,
-    replyTo: "thebookbajaar@gmail.com",
+    replyTo: "@gmail.com",
     attachments: [
       {
         filename: "certificate.pdf",

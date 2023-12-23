@@ -35,7 +35,7 @@ app.use((error, req, res, next) => {
 generateCertificate("Rishi Gupta");
 mongoose
   .connect(
-    `mongodb+srv://grishi634:E65uHU2XpocUA67B@cluster0.qhhctyw.mongodb.net/?retryWrites=true&w=majority`
+    `mongodb+srv://:@cluster0.qhhctyw.mongodb.net/?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(process.env.PORT || 5000);
